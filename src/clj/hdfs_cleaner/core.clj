@@ -30,8 +30,9 @@
 
 (def app-routes
   (routes
-    (GET ["/scan:path", :path #"\/.+"] {{hdfs-path :path} :route-params
-                                        {max-depth :max-depth} :params}
+    (GET ["/scan:path", :path #"\/.+"]
+         {{hdfs-path :path} :route-params
+          {max-depth :depth} :query-params}
       (spy max-depth)
       (http-res/response (hdfs/scan [hdfs-path max-depth])))
     (GET "/ping" {}
