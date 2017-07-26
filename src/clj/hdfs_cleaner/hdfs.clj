@@ -4,7 +4,7 @@
            (org.apache.hadoop.fs Path FileStatus)))
 
 (defn scan* [^Path path]
-  (pmap
+  (map
     (fn [^FileStatus file]
       (merge {:name (-> file (.getPath) (.getName))
               :path (-> file (.getPath) (.toString))
