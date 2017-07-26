@@ -35,7 +35,7 @@
          {{hdfs-path :path} :route-params
           {:keys [depth] :as query} :params}
       (spy [depth query])
-      (http-res/response (hdfs/scan [hdfs-path depth])))
+      (http-res/response (hdfs/scan [hdfs-path (read-string depth)])))
     (GET "/ping" {}
       (http-res/response "pong"))
     (route/not-found (http-res/error 404 "Not Found"))))
