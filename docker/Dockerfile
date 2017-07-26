@@ -16,6 +16,8 @@ ADD source /source
 ADD scripts /scripts
 WORKDIR /source
 
+RUN lein
+
 EXPOSE 4050
 
 CMD ["bash", "/scripts/entrypoint.sh"]
