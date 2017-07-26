@@ -33,7 +33,7 @@
   (routes
     (GET ["/scan:path", :path #"\/.+"]
          {{hdfs-path :path} :route-params
-          {:keys [depth] :as query} :query-params}
+          {:keys [depth] :as query} :params}
       (spy [depth query])
       (http-res/response (hdfs/scan [hdfs-path depth])))
     (GET "/ping" {}
