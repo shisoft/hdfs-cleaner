@@ -23,6 +23,6 @@
 
 (defn scan [^String path]
   (let [start-time (System/currentTimeMillis)]
-    {:result ($ scan* (Path. path))
+    {:result (scan* (Path. path))
      :start-time start-time
      :end-time (System/currentTimeMillis)}))
