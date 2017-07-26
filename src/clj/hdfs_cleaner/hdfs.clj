@@ -3,4 +3,7 @@
            (org.apache.hadoop.fs Path)))
 
 (defn scan [^String path]
-  (into [] (HDFS/scan (Path. (str hdfs-cleaner.config/hdfs-server path)))))
+  (let [start-time (System/currentTimeMillis)]
+    {:result (into [] (HDFS/scan (Path. (str hdfs-cleaner.config/hdfs-server path))))
+     :start-time start-time
+     :end-time (System/currentTimeMillis)}))
