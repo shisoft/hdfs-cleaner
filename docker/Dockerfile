@@ -16,7 +16,7 @@ ADD source /source
 ADD scripts /scripts
 WORKDIR /source
 
-RUN lein
+#RUN lein
 
 EXPOSE 4050
 
