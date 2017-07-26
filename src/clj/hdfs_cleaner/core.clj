@@ -31,6 +31,8 @@
   (routes
     (GET ["/scan:path", :path #"\/.+"] {{hdfs-path :path} :route-params}
       (http-res/response (hdfs/scan hdfs-path)))
+    (GET "/ping" {}
+      (http-res/response "pong"))
     (route/not-found (http-res/error 404 "Not Found"))))
 
 
