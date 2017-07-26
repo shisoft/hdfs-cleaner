@@ -8,7 +8,8 @@
             [manifold.deferred :as d]
             [cheshire.core :as json]
             [ring.util.response :refer [content-type]]
-            [ring.middleware.params :as params]
+            [ring.middleware.keyword-params :refer :all]
+            [ring.middleware.params :refer :all]
             [compojure.core :refer :all]
             [compojure.route :as route]
             [aleph.http :as http]
@@ -32,7 +33,7 @@
   (routes
     (GET ["/scan:path", :path #"\/.+"]
          {{hdfs-path :path} :route-params
-          {:keys [depth] :as query} :query}
+          {:keys [depth] :as query} :query-params}
       (spy [depth query])
       (http-res/response (hdfs/scan [hdfs-path depth])))
     (GET "/ping" {}
@@ -53,17 +54,18 @@
              (update response :headers dissoc "transfer-encoding"))))
 
 (def app
-  (params/wrap-params
-    (fn [req]
-      (log/debug {:type "request" :content req})
-      (d/chain
-        (-> req
-            (app-routes)
-            (d/catch
-              (fn [e]
-                (log/error e "Error on tracking")
-                (http-res/error 500 (.getMessage e)))))
-        encode-response-to-json))))
+  (-> (fn [req]
+        (log/debug {:type "request" :content req})
+        (d/chain
+          (-> req
+              (app-routes)
+              (d/catch
+                (fn [e]
+                  (log/error e "Error on tracking")
+                  (http-res/error 500 (.getMessage e)))))
+          encode-response-to-json))
+      (wrap-keyword-params)
+      (wrap-params)))
 
 (def ^:private ^:const aleph-config
   {:port 4050
