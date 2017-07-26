@@ -6,8 +6,8 @@
 (defn scan* [^Path path]
   (pmap
     (fn [^FileStatus file]
-      (merge {:path (-> file
-                        (.getPath) (.getName))
+      (merge {:name (-> file (.getPath) (.getName))
+              :path (-> file (.getPath) (.toString))
               :is-dir (.isDirectory file)
               :last-modified (.getModificationTime file)
               :replication (.getReplication file)}
