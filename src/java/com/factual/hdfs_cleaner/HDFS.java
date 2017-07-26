@@ -8,8 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HDFS {
+
   private static Configuration config;
-  private static FileSystem dfs;
+  public static FileSystem dfs;
 
   public static void init() {
     config = new Configuration();
