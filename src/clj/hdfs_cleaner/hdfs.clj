@@ -17,32 +17,32 @@
       (.globStatus path-pattern)))
 
 (defn scan** [^Path path depth max-depth]
-  (-> (map
-        (fn [^FileStatus file]
-          (let [path (.getPath file)
-                name (-> path (.getName))]
-            (when-not
-              (.startsWith name ".")
-              (merge {:name (-> path (.getName))
-                      :is-dir (.isDirectory file)
-                      :last-modified (.getModificationTime file)
-                      :replication (.getReplication file)}
-                     (try
-                       (if (and (.isDirectory file)
-                                (or (and depth max-depth (>= depth max-depth))))
-                         {:size (get-dir-size path)
-                          :sub-files "..."}
-                         (let [sub-files (when (.isDirectory file)
-                                           (scan** path (inc depth) max-depth))]
-                           {:sub-files sub-files
-                            :size (if sub-files
-                                    (reduce + (map :size sub-files))
-                                    (.getLen file))}))
-                       (catch Exception e
-                         (log/error e "Scan failed for dir:" (-> path (.toString)))
-                         {:has-error true}))))))
-        (.listStatus HDFS/dfs path))
-      (filter identity)))
+  (->> (map
+         (fn [^FileStatus file]
+           (let [path (.getPath file)
+                 name (-> path (.getName))]
+             (when-not
+               (.startsWith name ".")
+               (merge {:name (-> path (.getName))
+                       :is-dir (.isDirectory file)
+                       :last-modified (.getModificationTime file)
+                       :replication (.getReplication file)}
+                      (try
+                        (if (and (.isDirectory file)
+                                 (or (and depth max-depth (>= depth max-depth))))
+                          {:size (get-dir-size path)
+                           :sub-files "..."}
+                          (let [sub-files (when (.isDirectory file)
+                                            (scan** path (inc depth) max-depth))]
+                            {:sub-files sub-files
+                             :size (if sub-files
+                                     (reduce + (map :size sub-files))
+                                     (.getLen file))}))
+                        (catch Exception e
+                          (log/error e "Scan failed for dir:" (-> path (.toString)))
+                          {:has-error true}))))))
+         (.listStatus HDFS/dfs path))
+       (filter identity)))
 
 (defn scan* [^String path max-depth]
   (let [start-time (System/currentTimeMillis)]
