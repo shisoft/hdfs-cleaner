@@ -9,7 +9,7 @@
   (map
     (fn [^FileStatus file]
       (merge {:name (-> file (.getPath) (.getName))
-              :path (-> file (.getPath) (.toString))
+              ;:path (-> file (.getPath) (.toString))
               :is-dir (.isDirectory file)
               :last-modified (.getModificationTime file)
               :replication (.getReplication file)}
