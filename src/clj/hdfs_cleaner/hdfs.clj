@@ -16,7 +16,7 @@
   (-> HDFS/dfs
       (.globStatus path-pattern)))
 
-(defn scan** [^Path path & [depth max-depth]]
+(defn scan** [^Path path depth max-depth]
   (map
     (fn [^FileStatus file]
       (let [path (.getPath file)]
@@ -29,7 +29,8 @@
                           (or (and depth max-depth (>= depth max-depth))))
                    {:size (get-dir-size path)
                     :sub-files "..."}
-                   (let [sub-files (scan** path (inc depth) max-depth)]
+                   (let [sub-files (when (.isDirectory file)
+                                     (scan** path (inc depth) max-depth))]
                      {:sub-files sub-files
                       :size (if sub-files
                               (reduce + (map :size sub-files))
