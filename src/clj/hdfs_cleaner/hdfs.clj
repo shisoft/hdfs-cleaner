@@ -1,10 +1,11 @@
 (ns hdfs-cleaner.hdfs
   (:require [cluster-connector.utils.for-debug :refer [$ spy]]
+            [cluster-connector.native-cache.core :refer [defcache]]
             [taoensso.timbre :as log])
   (:import (com.factual.hdfs_cleaner HDFS)
            (org.apache.hadoop.fs Path FileStatus)))
 
-(defn scan* [^Path path]
+(defn scan** [^Path path]
   (map
     (fn [^FileStatus file]
       (merge {:name (-> file (.getPath) (.getName))
@@ -13,7 +14,7 @@
               :last-modified (.getModificationTime file)
               :replication (.getReplication file)}
              (try
-               (let [sub-files (when (.isDirectory file) (scan* (.getPath  file)))]
+               (let [sub-files (when (.isDirectory file) (scan** (.getPath  file)))]
                  {:sub-files sub-files
                   :size (if sub-files
                           (reduce + (map :size sub-files))
@@ -23,8 +24,12 @@
                  {:has-error true}))))
     (.listStatus HDFS/dfs path)))
 
-(defn scan [^String path]
+(defn scan* [^String path]
   (let [start-time (System/currentTimeMillis)]
-    {:result (scan* (Path. path))
+    {:result (scan** (Path. path))
      :start-time start-time
      :end-time (System/currentTimeMillis)}))
+
+(defcache
+  scan {:expire-after-write-secs (* 5 1000)}
+  (fn [path] (future (scan* path))))
