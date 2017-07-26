@@ -12,6 +12,10 @@
       (.getContentSummary path)
       (.getLength)))
 
+(defn path-pattern-matching [^Path path-pattern]
+  (-> HDFS/dfs
+      (.globStatus path-pattern)))
+
 (defn scan** [^Path path & [depth max-depth]]
   (map
     (fn [^FileStatus file]
