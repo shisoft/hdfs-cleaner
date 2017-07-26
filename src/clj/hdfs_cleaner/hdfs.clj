@@ -1,5 +1,6 @@
 (ns hdfs-cleaner.hdfs
-  (:require [cluster-connector.utils.for-debug :refer [$ spy]])
+  (:require [cluster-connector.utils.for-debug :refer [$ spy]]
+            [taoensso.timbre :as log])
   (:import (com.factual.hdfs_cleaner HDFS)
            (org.apache.hadoop.fs Path FileStatus)))
 
@@ -18,6 +19,7 @@
                           (reduce + (map :size sub-files))
                           (.getLen file))})
                (catch Exception e
+                 (log/error e "Scan failed for dir:" (-> file (.getPath) (.toString)))
                  {:has-error true}))))
     (.listStatus HDFS/dfs path)))
 
