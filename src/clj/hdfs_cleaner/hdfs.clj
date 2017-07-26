@@ -29,7 +29,7 @@
                           (or (and depth max-depth (>= depth max-depth))))
                    {:size (get-dir-size path)
                     :sub-files "..."}
-                   (let [sub-files (scan** path depth max-depth)]
+                   (let [sub-files (scan** path (inc depth) max-depth)]
                      {:sub-files sub-files
                       :size (if sub-files
                               (reduce + (map :size sub-files))
@@ -39,12 +39,12 @@
                    {:has-error true})))))
     (.listStatus HDFS/dfs path)))
 
-(defn scan* [^String path]
+(defn scan* [^String path max-depth]
   (let [start-time (System/currentTimeMillis)]
-    {:result (scan** (Path. path))
+    {:result (scan** (Path. path) 0 max-depth)
      :start-time start-time
      :end-time (System/currentTimeMillis)}))
 
 (defcache
   scan {:expire-after-write-secs (* 5 1000)}
-  (fn [path] (future (scan* path))))
+  (fn [[path max-depth]] (future (scan* path max-depth))))

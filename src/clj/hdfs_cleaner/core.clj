@@ -29,8 +29,9 @@
 
 (def app-routes
   (routes
-    (GET ["/scan:path", :path #"\/.+"] {{hdfs-path :path} :route-params}
-      (http-res/response (hdfs/scan hdfs-path)))
+    (GET ["/scan:path", :path #"\/.+"] {{hdfs-path :path} :route-params
+                                        {max-depth :max-depth} :query-params}
+      (http-res/response (hdfs/scan [hdfs-path max-depth])))
     (GET "/ping" {}
       (http-res/response "pong"))
     (route/not-found (http-res/error 404 "Not Found"))))
@@ -49,6 +50,7 @@
              (update response :headers dissoc "transfer-encoding"))))
 
 (defn app [req]
+  (log/debug {:type "request" :content req})
   (d/chain
     (-> req
         (app-routes)
