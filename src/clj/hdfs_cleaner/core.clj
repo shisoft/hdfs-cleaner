@@ -8,6 +8,7 @@
             [manifold.deferred :as d]
             [cheshire.core :as json]
             [ring.util.response :refer [content-type]]
+            [ring.middleware.params :as params]
             [compojure.core :refer :all]
             [compojure.route :as route]
             [aleph.http :as http]
@@ -49,16 +50,18 @@
            (fn [response]
              (update response :headers dissoc "transfer-encoding"))))
 
-(defn app [req]
-  (log/debug {:type "request" :content req})
-  (d/chain
-    (-> req
-        (app-routes)
-        (d/catch
-          (fn [e]
-            (log/error e "Error on tracking")
-            (http-res/error 500 (.getMessage e)))))
-    encode-response-to-json))
+(def app
+  (params/wrap-params
+    (fn [req]
+      (log/debug {:type "request" :content req})
+      (d/chain
+        (-> req
+            (app-routes)
+            (d/catch
+              (fn [e]
+                (log/error e "Error on tracking")
+                (http-res/error 500 (.getMessage e)))))
+        encode-response-to-json))))
 
 (def ^:private ^:const aleph-config
   {:port 4050
