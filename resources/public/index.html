@@ -102,7 +102,7 @@
                 .attrTween("d", arcTweenZoom(d));
             if (d.is_dir && d.children === undefined) {
                 let path = d.path;
-                d3.json("/path" + path + "?depth=3", function (error, root) {
+                d3.json("/scan" + path + "?depth=3", function (error, root) {
                     d.children = root.result;
                     refresh_data();
                 })
