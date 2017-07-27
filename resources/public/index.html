@@ -31,8 +31,9 @@
             <div id="sunburst"></div>
         </div>
         <div class="col-xs-6 col-md-4">
-            <b><span id="filename"></span></b>
-            <span id="filesize"></span>
+            <b><div id="filename"></div></b>
+            <div id="filesize"></div>
+            <ul id="children"></ul>
         </div>
     </div>
 </body>
@@ -103,6 +104,10 @@
         function onmove(d) {
             $("#filename").html(d.name);
             $("#filesize").html(d.size);
+            var chindren = $("#children");
+            $.each(d.children, function (index, value) {
+                chindren.append($("<li>").html(value.name));
+            })
         }
     });
 
