@@ -93,8 +93,7 @@
 
         function changed() {
             path.data(partition.value(function(d) { return d.size; }).nodes)
-//                .transition()
-//                .duration(100)
+                .transition()
                 .attrTween("d", arcTweenData);
         }
         changed();
