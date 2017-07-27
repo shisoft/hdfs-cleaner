@@ -101,7 +101,13 @@
             path.transition()
                 .duration(1000)
                 .attrTween("d", arcTweenZoom(d));
-
+            if (d.is_dir && d.children === undefined) {
+                let path = d.path;
+                d3.json(path + "?depth=3", function (error, root) {
+                    d.children = root.result();
+                    refresh_data();
+                })
+            }
         }
         function onmove(d) {
             $("#filename").html(d.path);
