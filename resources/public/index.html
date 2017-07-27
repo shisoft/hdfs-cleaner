@@ -107,7 +107,7 @@
             };
             if (d.is_dir && d.children === undefined) {
                 let path = d.path;
-                d3.json("/scan" + path + "?depth=2", function (error, path_root) {
+                d3.json("/scan" + path + "?depth=1", function (error, path_root) {
                     d.children = path_root.result;
                     init_path(root);
                     changed();
