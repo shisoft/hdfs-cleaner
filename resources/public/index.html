@@ -74,22 +74,22 @@
     var node;
     var refresh_data = function () {};
 
-    function init_path(root) {
-        return svg.datum(root).selectAll("path")
-            .data(partition.nodes)
-            .enter().append("path")
-            .attr("d", arc)
-            .style("fill", function(d) { return color((d.children ? d : d.parent).name); })
-            .on("click", click)
-            .on("mouseover", onmove)
-            .each(stash);
-    }
-
     d3.json(getPath() + "?depth=3", function(error, root) {
         root = {name: "root", children: root.result};
         console.log(root);
         node = root;
         var path = init_path(root);
+
+        function init_path(root) {
+            return svg.datum(root).selectAll("path")
+                .data(partition.nodes)
+                .enter().append("path")
+                .attr("d", arc)
+                .style("fill", function(d) { return color((d.children ? d : d.parent).name); })
+                .on("click", click)
+                .on("mouseover", onmove)
+                .each(stash);
+        }
 
         refresh_data = function change() {
             path
