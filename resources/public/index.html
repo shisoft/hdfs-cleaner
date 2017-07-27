@@ -115,7 +115,10 @@
             var chindren = $("#children").html("");
             $.each(d.children, function (index, value) {
                 chindren.append($("<li>").html(value.name));
-            })
+            });
+            if (d.is_dir && children === null) {
+                children.html("[CLICK TO EXPLORE]")
+            }
         }
     });
 
