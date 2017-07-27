@@ -96,7 +96,7 @@
         };
 
         function click(d) {
-            let zoom = function () {
+            let zoom = function (d) {
                 node = d;
                 path.transition()
                     .duration(100)
@@ -106,10 +106,10 @@
                 let path = d.path;
                 d3.json("/scan" + path + "?depth=3", function (error, root) {
                     d.children = root.result;
-                    zoom();
+                    zoom(d);
                 })
             } else {
-                zoom();
+                zoom(d);
             }
         }
         function onmove(d) {
