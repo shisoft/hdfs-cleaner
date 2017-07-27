@@ -63,7 +63,7 @@
     // Keep track of the node that is currently being displayed as the root.
     var node;
 
-    d3.json("scan/user/ryan?depth=1", function(error, root) {
+    d3.json("scan/user/ryan?depth=3", function(error, root) {
         root = {name: "root", children: root.result};
         console.log(root);
         node = root;
