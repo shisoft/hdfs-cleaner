@@ -90,5 +90,6 @@
   (log/info "[startup] Starting HTTP server")
   (http/start-server app aleph-config)
   (log/info "[startup] HDFS cleaner is ready")
+  (hdfs/scan-alert-users)
   (a/<!! (a/chan)))
 

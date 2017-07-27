@@ -53,3 +53,24 @@
 (defcache
   scan {:expire-after-write-secs (* 5 1000)}
   (fn [[path max-depth]] (future (scan* path max-depth))))
+
+(def one-TB (* 1024 1024 1024 1024))
+(def user-dir "/user")
+
+(defn bytes->human-readable [bytes & [si?]]
+  (let [unit (if si? 1000 1024)]
+    (if (< bytes unit) (str bytes " B")
+                       (let [exp (int  (/ (Math/log bytes)
+                                          (Math/log unit)))
+                             pre (str (nth (if si? "kMGTPE" "KMGTPE") (dec exp)) (if-not si? "i" ))]
+                         (format "%.1f %sB" (/ bytes (Math/pow unit exp)) pre)))))
+
+(defn scan-alert-users []
+  (let [path (Path. ^String user-dir)]
+    (doseq [user-dir (.listStatus HDFS/dfs path)]
+      (let [user-path (.getPath user-dir)
+            user-name (.getName user-path)
+            size (get-dir-size user-path)
+            size-readable (bytes->human-readable size)]
+        (when (>= size one-TB)
+          (log/info "User:" user-name "use" size-readable))))))
