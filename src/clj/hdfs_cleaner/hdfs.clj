@@ -30,11 +30,10 @@
                       (try
                         (if (and (.isDirectory file)
                                  (or (and depth max-depth (>= depth max-depth))))
-                          {:size (get-dir-size path)
-                           :sub_files "..."}
+                          {:size (get-dir-size path)}
                           (let [sub-files (when (.isDirectory file)
                                             (scan** path (inc depth) max-depth))]
-                            {:sub_files sub-files
+                            {:children sub-files
                              :size (if sub-files
                                      (reduce + (map :size sub-files))
                                      (.getLen file))}))
