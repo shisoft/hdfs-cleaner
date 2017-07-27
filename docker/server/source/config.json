@@ -1,0 +1,6 @@
+{
+  "dscribe-server": "http://marathon-services.la.prod.factual.com:10129/",
+  "dscribe-app": "hdfs-cleaner",
+  "log-level": "debug",
+  "hdfs-server": "hdfs://dev"
+}

@@ -1,0 +1,1 @@
+(ns hdfs-cleaner.task)

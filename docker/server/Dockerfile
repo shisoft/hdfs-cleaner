@@ -1,10 +1,21 @@
 FROM factual/docker-cdh5-base:java8
 
-RUN apt-get update && apt-get install -y ldap-auth-config git-core
+RUN apt-get update && apt-get install -y ldap-auth-config git-core apt-transport-https \
+    ca-certificates curl software-properties-common
+RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+RUN add-apt-repository \
+       "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+       $(lsb_release -cs) \
+       stable"
+RUN apt-get update
+RUN apt-get install docker-ce
 RUN apt-get install -y ruby-full
 RUN apt-get install -y openjdk-8-jdk-headless
+
 RUN apt-get clean
 RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+RUN docker pull factual/docker-cdh5-base:java8
 
 ENV LC_ALL en_US.UTF-8
 ENV LANG en_US.UTF-8
