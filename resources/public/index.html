@@ -72,7 +72,6 @@
 
     // Keep track of the node that is currently being displayed as the root.
     var node;
-    var refresh_data = function () {};
 
     d3.json(getPath() + "?depth=3", function(error, root) {
         root = {name: "root", children: root.result};
@@ -113,7 +112,7 @@
         }
         function onmove(d) {
             $("#filename").html(d.path);
-            $("#filesize").html(d.size);
+            $("#filesize").html(humanFileSize(d.size));
             var chindren = $("#children").html("");
             $.each(d.children, function (index, value) {
                 chindren.append($("<li>").html(value.name));
@@ -177,4 +176,8 @@
         return "/scan" + getParameterByName("path");
     }
 
+    function humanFileSize(size) {
+        var i = Math.floor( Math.log(size) / Math.log(1024) );
+        return ( size / Math.pow(1024, i) ).toFixed(2) * 1 + ' ' + ['B', 'kB', 'MB', 'GB', 'TB'][i];
+    };
 </script>
