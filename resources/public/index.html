@@ -96,8 +96,8 @@
             let zoom = function (d) {
                 node = d;
                 path
-//                    .transition()
-//                    .duration(100)
+                    .transition()
+                    .duration(1000)
                     .attrTween("d", arcTweenZoom(d));
             };
             if (d.is_dir && d.children === undefined) {
@@ -105,7 +105,6 @@
                 d3.json("/scan" + path + "?depth=1", function (error, path_root) {
                     d.children = path_root.result;
                     init_path(root);
-                    //changed();
                     zoom(d);
                 })
             } else {
