@@ -93,7 +93,7 @@
 
         function changed() {
             path.data(partition.value(function(d) { return d.size; }).nodes)
-                .transition()
+                //.transition()
                 .attrTween("d", arcTweenData);
         }
         changed();
@@ -101,8 +101,9 @@
         function click(d) {
             let zoom = function (d) {
                 node = d;
-                path.transition()
-                    .duration(100)
+                path
+//                    .transition()
+//                    .duration(100)
                     .attrTween("d", arcTweenZoom(d));
             };
             if (d.is_dir && d.children === undefined) {
