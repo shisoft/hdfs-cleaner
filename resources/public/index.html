@@ -27,10 +27,8 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <body>
     <div class="row">
-        <div class="col-xs-12 col-sm-6 col-md-8">
-            <div id="sunburst"></div>
-        </div>
-        <div class="col-xs-6 col-md-4">
+        <div id="sunburst"></div>
+        <div class="pull-right">
             <b><div id="filename"></div></b>
             <div id="filesize"></div>
             <ul id="children"></ul>
@@ -84,7 +82,7 @@
                 .data(partition.nodes)
                 .enter().append("path")
                 .attr("d", arc)
-                .style("fill", function(d) { return color(d.name); })
+                .style("fill", function(d) { return color((d.children ? d : d.parent).name); })
                 .on("click", click)
                 .on("mouseover", onmove)
                 .each(stash);
@@ -104,6 +102,7 @@
                 d3.json("/scan" + path + "?depth=1", function (error, path_root) {
                     d.children = path_root.result;
                     init_path(root);
+                    arcTweenData(a, i);
                     zoom(d);
                 })
             } else {
@@ -179,5 +178,5 @@
     function humanFileSize(size) {
         var i = Math.floor( Math.log(size) / Math.log(1024) );
         return ( size / Math.pow(1024, i) ).toFixed(2) * 1 + ' ' + ['B', 'kB', 'MB', 'GB', 'TB'][i];
-    };
+    }
 </script>
