@@ -24,31 +24,31 @@
              (when-not
                (.startsWith name ".")
                (merge {:name (-> path (.getName))
-                       :is-dir (.isDirectory file)
-                       :last-modified (.getModificationTime file)
+                       :is_dir (.isDirectory file)
+                       :last_modified (.getModificationTime file)
                        :replication (.getReplication file)}
                       (try
                         (if (and (.isDirectory file)
                                  (or (and depth max-depth (>= depth max-depth))))
                           {:size (get-dir-size path)
-                           :sub-files "..."}
+                           :sub_files "..."}
                           (let [sub-files (when (.isDirectory file)
                                             (scan** path (inc depth) max-depth))]
-                            {:sub-files sub-files
+                            {:sub_files sub-files
                              :size (if sub-files
                                      (reduce + (map :size sub-files))
                                      (.getLen file))}))
                         (catch Exception e
                           (log/error e "Scan failed for dir:" (-> path (.toString)))
-                          {:has-error true}))))))
+                          {:has_error true}))))))
          (.listStatus HDFS/dfs path))
        (filter identity)))
 
 (defn scan* [^String path max-depth]
   (let [start-time (System/currentTimeMillis)]
     {:result (scan** (Path. path) 0 max-depth)
-     :start-time start-time
-     :end-time (System/currentTimeMillis)}))
+     :start_time start-time
+     :end_time (System/currentTimeMillis)}))
 
 (defcache
   scan {:expire-after-write-secs (* 5 1000)}

@@ -15,7 +15,8 @@
             [aleph.http :as http]
             [clojure.core.async :as a]
             [cluster-connector.utils.for-debug :refer :all]
-            [cemerick.pomegranate :as cp])
+            [cemerick.pomegranate :as cp]
+            [ring.util.response :as response])
   (:import (com.factual.hdfs_cleaner HDFS)
            (org.apache.hadoop.conf Configuration)))
 
@@ -38,6 +39,9 @@
       (http-res/response (hdfs/scan [hdfs-path (read-string depth)])))
     (GET "/ping" {}
       (http-res/response "pong"))
+    (GET "/" []
+      (response/redirect "/index.html"))
+    (route/resources "/")
     (route/not-found (http-res/error 404 "Not Found"))))
 
 
