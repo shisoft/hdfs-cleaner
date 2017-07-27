@@ -74,11 +74,8 @@
     var node;
     var refresh_data = function () {};
 
-    d3.json(getPath() + "?depth=3", function(error, root) {
-        root = {name: "root", children: root.result};
-        console.log(root);
-        node = root;
-        var path = svg.datum(root).selectAll("path")
+    function init_path(root) {
+        return svg.datum(root).selectAll("path")
             .data(partition.nodes)
             .enter().append("path")
             .attr("d", arc)
@@ -86,6 +83,13 @@
             .on("click", click)
             .on("mouseover", onmove)
             .each(stash);
+    }
+
+    d3.json(getPath() + "?depth=3", function(error, root) {
+        root = {name: "root", children: root.result};
+        console.log(root);
+        node = root;
+        var path = init_path(root);
 
         refresh_data = function change() {
             path
@@ -104,8 +108,9 @@
             };
             if (d.is_dir && d.children === undefined) {
                 let path = d.path;
-                d3.json("/scan" + path + "?depth=3", function (error, root) {
-                    d.children = root.result;
+                d3.json("/scan" + path + "?depth=3", function (error, path_root) {
+                    d.children = path_root.result;
+                    init_path(root);
                     zoom(d);
                 })
             } else {
