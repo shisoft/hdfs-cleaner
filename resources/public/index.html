@@ -104,7 +104,7 @@
         function onmove(d) {
             $("#filename").html(d.name);
             $("#filesize").html(d.size);
-            var chindren = $("#children");
+            var chindren = $("#children").html("");
             $.each(d.children, function (index, value) {
                 chindren.append($("<li>").html(value.name));
             })
