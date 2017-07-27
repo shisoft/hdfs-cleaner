@@ -74,7 +74,7 @@
     var node;
     var refresh_data = function () {};
 
-    d3.json("scan/user/ryan?depth=3", function(error, root) {
+    d3.json(getPath() + "?depth=3", function(error, root) {
         root = {name: "root", children: root.result};
         console.log(root);
         node = root;
@@ -86,6 +86,7 @@
             .on("click", click)
             .on("mouseover", onmove)
             .each(stash);
+
         refresh_data = function change() {
             var value = function(d) { return d.size; };
             path
@@ -100,9 +101,16 @@
             path.transition()
                 .duration(1000)
                 .attrTween("d", arcTweenZoom(d));
+            if (d.is_dir && d.children === undefined) {
+                var path = d.path;
+                d3.json(path + "?depth=3", function (error, root) {
+                    d.children = root.result();
+                    refresh_data();
+                })
+            }
         }
         function onmove(d) {
-            $("#filename").html(d.name);
+            $("#filename").html(d.path);
             $("#filesize").html(d.size);
             var chindren = $("#children").html("");
             $.each(d.children, function (index, value) {
@@ -151,6 +159,20 @@
                 ? function(t) { return arc(d); }
                 : function(t) { x.domain(xd(t)); y.domain(yd(t)).range(yr(t)); return arc(d); };
         };
+    }
+
+    function getParameterByName(name, url) {
+        if (!url) url = window.location.href;
+        name = name.replace(/[\[\]]/g, "\\$&");
+        var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+            results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return '';
+        return decodeURIComponent(results[2].replace(/\+/g, " "));
+    }
+
+    function getPath() {
+        return getParameterByName("path");
     }
 
 </script>
