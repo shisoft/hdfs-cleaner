@@ -61,8 +61,9 @@
     var node;
 
     d3.json("scan/user/shihao?depth=1", function(error, root) {
-        node = {name: "root", children: root.result};
-        console.log(node);
+        root = {name: "root", children: root.result};
+        console.log(root);
+        node = root;
         var path = svg.datum(root).selectAll("path")
             .data(partition.nodes)
             .enter().append("path")
