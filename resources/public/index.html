@@ -91,14 +91,14 @@
             path
                 .data(partition.value(function(d) { return d.size; }).nodes)
                 .transition()
-                .duration(1000)
+                .duration(100)
                 .attrTween("d", arcTweenData);
         };
 
         function click(d) {
             node = d;
             path.transition()
-                .duration(1000)
+                .duration(100)
                 .attrTween("d", arcTweenZoom(d));
             if (d.is_dir && d.children === undefined) {
                 let path = d.path;
