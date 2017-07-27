@@ -82,8 +82,8 @@
             .data(partition.nodes)
             .enter().append("path")
             .attr("d", arc)
-            .style("fill", function(d) { return color((d.children ? d : d.parent).name); })
-            .on("click", click)
+            .style("fill", function(d) { return color((d.children ? d : d.parent).name); });
+        path.on("click", click)
             .on("mouseover", onmove)
             .each(stash);
 
@@ -101,6 +101,7 @@
             path.transition()
                 .duration(1000)
                 .attrTween("d", arcTweenZoom(d));
+
             if (d.is_dir && d.children === undefined) {
                 var path = d.path;
                 d3.json(path + "?depth=3", function (error, root) {
