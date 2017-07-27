@@ -96,16 +96,20 @@
         };
 
         function click(d) {
-            node = d;
-            path.transition()
-                .duration(100)
-                .attrTween("d", arcTweenZoom(d));
+            let zoom = function () {
+                node = d;
+                path.transition()
+                    .duration(100)
+                    .attrTween("d", arcTweenZoom(d));
+            };
             if (d.is_dir && d.children === undefined) {
                 let path = d.path;
                 d3.json("/scan" + path + "?depth=3", function (error, root) {
                     d.children = root.result;
-                    refresh_data();
+                    zoom();
                 })
+            } else {
+                zoom();
             }
         }
         function onmove(d) {
