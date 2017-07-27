@@ -19,6 +19,9 @@
         stroke: #fff;
         fill-rule: evenodd;
     }
+    path:hover {
+        stroke: #000;
+    }
 
 </style>
 <body>
@@ -60,7 +63,7 @@
     // Keep track of the node that is currently being displayed as the root.
     var node;
 
-    d3.json("scan/user/ryan?depth=3", function(error, root) {
+    d3.json("scan/user/ryan?depth=1", function(error, root) {
         root = {name: "root", children: root.result};
         console.log(root);
         node = root;
@@ -71,13 +74,6 @@
             .style("fill", function(d) { return color((d.children ? d : d.parent).name); })
             .on("click", click)
             .each(stash);
-
-        var text = path.append("text")
-            .attr("transform", function(d) { return "rotate(" + computeTextRotation(d) + ")"; })
-            .attr("x", function(d) { return y(d.y); })
-            .attr("dx", "6") // margin
-            .attr("dy", ".35em") // vertical-align
-            .text(function(d) { return d.name; });
 
         d3.selectAll("input").on("change", function change() {
             var value = this.value === "count"
@@ -92,24 +88,10 @@
         });
 
         function click(d) {
-            // fade out all text elements
-            text.transition().attr("opacity", 0);
             node = d;
             path.transition()
                 .duration(1000)
-                .attrTween("d", arcTweenZoom(d))
-                .each("end", function(e, i) {
-                // check if the animated element's data e lies within the visible angle span given in d
-                if (e.x >= d.x && e.x < (d.x + d.dx)) {
-                    // get a selection of the associated text element
-                    var arcText = d3.select(this.parentNode).select("text");
-                    // fade in the text element and recalculate positions
-                    arcText.transition().duration(750)
-                        .attr("opacity", 1)
-                        .attr("transform", function() { return "rotate(" + computeTextRotation(e) + ")" })
-                        .attr("x", function(d) { return y(d.y); });
-                }
-            });
+                .attrTween("d", arcTweenZoom(d));
         }
     });
 
@@ -153,10 +135,6 @@
                 ? function(t) { return arc(d); }
                 : function(t) { x.domain(xd(t)); y.domain(yd(t)).range(yr(t)); return arc(d); };
         };
-    }
-
-    function computeTextRotation(d) {
-        return (x(d.x + d.dx / 2) - Math.PI / 2) / Math.PI * 180;
     }
 
 </script>
