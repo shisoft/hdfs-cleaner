@@ -24,6 +24,7 @@
              (when-not
                (.startsWith name ".")
                (merge {:name (-> path (.getName))
+                       :path (-> path (.toUri) (.getRawPath))
                        :is_dir (.isDirectory file)
                        :last_modified (.getModificationTime file)
                        :replication (.getReplication file)}
