@@ -91,13 +91,10 @@
                 .each(stash);
         }
 
-        refresh_data = function change() {
-            path
-                .data(partition.value(function(d) { return d.size; }).nodes)
-                .transition()
-                .duration(100)
-                .attrTween("d", arcTweenData);
-        };
+        path.data(partition.value(function(d) { return d.size; }).nodes)
+            .transition()
+            .duration(100)
+            .attrTween("d", arcTweenData);
 
         function click(d) {
             let zoom = function (d) {
