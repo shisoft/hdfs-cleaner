@@ -88,9 +88,8 @@
             .each(stash);
 
         refresh_data = function change() {
-            var value = function(d) { return d.size; };
             path
-                .data(partition.value(value).nodes)
+                .data(partition.value(function(d) { return d.size; }).nodes)
                 .transition()
                 .duration(1000)
                 .attrTween("d", arcTweenData);
@@ -103,8 +102,8 @@
                 .attrTween("d", arcTweenZoom(d));
             if (d.is_dir && d.children === undefined) {
                 let path = d.path;
-                d3.json(path + "?depth=3", function (error, root) {
-                    d.children = root.result();
+                d3.json("/path" + path + "?depth=3", function (error, root) {
+                    d.children = root.result;
                     refresh_data();
                 })
             }
