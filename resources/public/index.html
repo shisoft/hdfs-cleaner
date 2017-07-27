@@ -84,6 +84,9 @@
             .attr("d", arc)
             .style("fill", function(d) { return color((d.children ? d : d.parent).name); });
         path.on("click", click)
+            .on("click", function () {
+                console.log(path);
+            })
             .on("mouseover", onmove)
             .each(stash);
 
