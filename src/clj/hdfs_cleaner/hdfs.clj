@@ -85,6 +85,7 @@
     (doseq [user-dir (.listStatus HDFS/dfs path)]
       (let [user-path (.getPath user-dir)
             user-name (.getName user-path)
+            _ (log/info "scan" user-name)
             size (scan-size user-path)
             size-readable (bytes->human-readable size)]
         (when (>= size one-TB)
