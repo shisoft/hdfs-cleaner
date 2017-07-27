@@ -65,12 +65,27 @@
                              pre (str (nth (if si? "kMGTPE" "KMGTPE") (dec exp)) (if-not si? "i" ))]
                          (format "%.1f %sB" (/ bytes (Math/pow unit exp)) pre)))))
 
+(defn scan-size [^Path path]
+  (->> (try
+         (.listStatus HDFS/dfs path)
+         (catch Exception e 0))
+       (map
+         (fn [file]
+           (try
+             (let [path (.getPath file)]
+               (if (.isDirectory file)
+                 (scan-size path)
+                 (.getLen file)))
+             (catch Exception e 0))))
+       (reduce +)))
+
 (defn scan-alert-users []
   (let [path (Path. ^String user-dir)]
+    (log/info "Start scan")
     (doseq [user-dir (.listStatus HDFS/dfs path)]
       (let [user-path (.getPath user-dir)
             user-name (.getName user-path)
-            size (get-dir-size user-path)
+            size (scan-size user-path)
             size-readable (bytes->human-readable size)]
         (when (>= size one-TB)
           (log/info "User:" user-name "use" size-readable))))))
