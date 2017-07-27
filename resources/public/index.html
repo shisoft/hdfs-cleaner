@@ -91,10 +91,13 @@
                 .each(stash);
         }
 
-        path.data(partition.value(function(d) { return d.size; }).nodes)
-            .transition()
-            .duration(100)
-            .attrTween("d", arcTweenData);
+        function changed() {
+            path.data(partition.value(function(d) { return d.size; }).nodes)
+//                .transition()
+//                .duration(100)
+                .attrTween("d", arcTweenData);
+        }
+        changed();
 
         function click(d) {
             let zoom = function (d) {
@@ -108,6 +111,7 @@
                 d3.json("/scan" + path + "?depth=3", function (error, path_root) {
                     d.children = path_root.result;
                     init_path(root);
+                    changed();
                     zoom(d);
                 })
             } else {
