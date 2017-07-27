@@ -20,15 +20,10 @@
         fill-rule: evenodd;
     }
     path:hover {
-        opacity: .5;
+        opacity: .8;
     }
-
 </style>
 <body>
-<form>
-    <label><input type="radio" name="mode" value="size"> Size</label>
-    <label><input type="radio" name="mode" value="count" checked> Count</label>
-</form>
 <script src="//d3js.org/d3.v3.min.js"></script>
 <script>
 
@@ -62,6 +57,7 @@
 
     // Keep track of the node that is currently being displayed as the root.
     var node;
+    var refresh_data = function () {};
 
     d3.json("scan/user/ryan?depth=3", function(error, root) {
         root = {name: "root", children: root.result};
@@ -73,25 +69,25 @@
             .attr("d", arc)
             .style("fill", function(d) { return color((d.children ? d : d.parent).name); })
             .on("click", click)
+            .on("mouseover", onmove)
             .each(stash);
-
-        d3.selectAll("input").on("change", function change() {
-            var value = this.value === "count"
-                ? function() { return 1; }
-                : function(d) { return d.size; };
-
+        refresh_data = function change() {
+            var value = function(d) { return d.size; };
             path
                 .data(partition.value(value).nodes)
                 .transition()
                 .duration(1000)
                 .attrTween("d", arcTweenData);
-        });
+        };
 
         function click(d) {
             node = d;
             path.transition()
                 .duration(1000)
                 .attrTween("d", arcTweenZoom(d));
+        }
+        function onmove(d) {
+
         }
     });
 
